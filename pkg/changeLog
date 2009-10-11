@@ -1,0 +1,6 @@
+2009-8-4
+  *make network plot can do two traits together.
+2009-6-26
+  *change some warning.
+2009-6-24
+  *add subdirectory /R/sysdata.rda file, make environment .rqtlnetwork works, so it don't need to generate r object in .GlobalEnv
