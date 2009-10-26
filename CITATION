@@ -1,0 +1,10 @@
+To cite package 'RQTLNetwork' in publications use:
+
+Zheng Wenjun. 2009. RQTLNetwork: software package for QTL visualization. R package version 0.1-1.http://rqtlnetwork.r-forge.r-project.org/.
+
+@Manual{RQTLNetwork_wjZheng,
+    title = {RQTLNetwork: software package for QTL visualization},
+    author = {Wenjun Zheng},
+    year = {2009},   
+    url = {http://rqtlnetwork.r-forge.r-project.org/}
+}
