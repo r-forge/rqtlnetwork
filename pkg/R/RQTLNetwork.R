@@ -9,7 +9,7 @@ function(){
   assign("traitname",NA, envir=.rqtlnetwork)
   assign("chromosome",NA, envir=.rqtlnetwork)
   widgets<-list()
-  win = gwindow("R-QTLNetwork")#, width=700, height=400)
+  win = gwindow("RQTLNetwork")#, width=700, height=400)
   gp = ggroup(horizontal=FALSE, cont=win, expand=TRUE)  # main group
 
   tb = list()
@@ -19,7 +19,7 @@ function(){
 
   tmp <- gframe("Files", container=gp, expand=TRUE)
   lyout<-glayout(container=tmp)
-  lyout[1,1]<- gbutton("QNK File", cont = lyout, handler = function(h,...) {
+  lyout[1,1]<- gbutton("QNK File...", cont = lyout, handler = function(h,...) {
       std <- gfile("Select QNK File...")
       if(std != "") {
         x <- read.table(std,fill=T,colClasses="character",
@@ -33,7 +33,7 @@ function(){
       }
   })
   lyout[1,2]<-(widgets$qnk<-gedit(text="",cont=lyout))
-  lyout[2,1]<-gbutton("Map File", cont=lyout,
+  lyout[2,1]<-gbutton("Map File...", cont=lyout,
         handler = function(h,...) {
         std<-gfile(text="Select Map File...")
         if(std != "")
@@ -57,7 +57,7 @@ function(){
 
 
   lyout<-glayout(container=MI)
-  lyout[1,1]<-gbutton("Trait", cont=lyout,
+  lyout[1,1]<-gbutton("Trait...", cont=lyout,
     handler = function(h,...)
     {
         if(!is.na(get("traitname",envir=.rqtlnetwork)[1]))
@@ -68,7 +68,7 @@ function(){
         }
     })
   lyout[1,2]<-(widgets$trait<-gedit("",cont=lyout))
-  lyout[1,3]<-gbutton("Color",cont=lyout,
+  lyout[1,3]<-gbutton("Color...",cont=lyout,
       handler = function(h,...) {
           if(svalue(widgets$trait)!="")
           {
@@ -82,7 +82,7 @@ function(){
           }
       })
   lyout[1,4]<-(widgets$color<-gedit("",cont=lyout))
-  lyout[2,1]<-gbutton("Chromosome",cont=lyout,handler = function(h,...) {
+  lyout[2,1]<-gbutton("Chromosome...",cont=lyout,handler = function(h,...) {
               std<-myselect.list(list=c("all",as.character(get("chromosome",envir=.rqtlnetwork))),multiple=TRUE,title="Select chromosomes...")
               svalue(widgets$chr)<-toString(std)
       })
@@ -109,68 +109,18 @@ function(){
   lyout[7,2]<-(widgets$NotationFont<-gcombobox(c("1","2","3","4"),cont=lyout))
   lyout[7,3]<-gbutton("NotationFontSize",cont=lyout)
   lyout[7,4]<-(widgets$NotationFontSize<-gedit("1",cont=lyout))
-
-  addHandlerChanged(widgets$trait,handler=function(h,...){
-          close.cur.dev()
-          MIPlot()
-      })
-  addHandlerChanged(widgets$color,handler=function(h,...){
-          close.cur.dev()
-          MIPlot()
-  })
-  addHandlerChanged(widgets$chr,handler=function(h,...){
-          close.cur.dev()
-          MIPlot()
-  })
-  addHandlerChanged(widgets$threshold,handler=function(h,...){
-          close.cur.dev()
-          MIPlot()
-  })
-  addHandlerChanged(widgets$clean,handler=function(h,...){
-          close.cur.dev()
-          MIPlot()
-  })
-  addHandlerChanged(widgets$LineType,handler=function(h,...){
-          close.cur.dev()
-          MIPlot()
-  })
-  addHandlerChanged(widgets$Xlabel,handler=function(h,...){
-          close.cur.dev()
-          MIPlot()
-      })
-  addHandlerChanged(widgets$XlabelRot,handler=function(h,...){
-          close.cur.dev()
-          MIPlot()
-      })
-  addHandlerChanged(widgets$XlabelFont,handler=function(h,...){
-          close.cur.dev()
-          MIPlot()
-  })
-  addHandlerChanged(widgets$XlabelFontSize,handler=function(h,...){
-          close.cur.dev()
-          MIPlot()
-  })
-  addHandlerChanged(widgets$YlabelFont,handler=function(h,...){
-          close.cur.dev()
-          MIPlot()
-  })
-  addHandlerChanged(widgets$YlabelFontSize,handler=function(h,...){
-          close.cur.dev()
-          MIPlot()
-  })
-  addHandlerChanged(widgets$NotationFont,handler=function(h,...){
-          close.cur.dev()
-          MIPlot()
-  })
-  addHandlerChanged(widgets$NotationFontSize,handler=function(h,...){
-          close.cur.dev()
-          MIPlot()
-  })
+  button.group <- ggroup(container = MI)
+  ## Push buttons to right
+  addSpring(button.group)
+  gbutton("Run", handler=function(h,...){
+      close.cur.dev()
+      MIPlot()
+      }, container=button.group)
   ##MIPlot over
 
   ##QTL Plot
   lyout<-glayout(container=QTL)
-  lyout[1,1]<-gbutton("Trait", cont=lyout,
+  lyout[1,1]<-gbutton("Trait...", cont=lyout,
     handler = function(h,...)
     {
         if(!is.na(get("traitname",envir=.rqtlnetwork)[1]))
@@ -181,7 +131,7 @@ function(){
         }
     })
   lyout[1,2]<-(widgets$QTLtrait<-gedit("",cont=lyout))
-  lyout[1,3]<-gbutton("Color",cont=lyout,
+  lyout[1,3]<-gbutton("Color...",cont=lyout,
       handler = function(h,...) {
           #if(svalue(widgets$QTLtrait)!="")
           #{
@@ -195,7 +145,7 @@ function(){
           #}
       })
   lyout[1,4]<-(widgets$QTLcolor<-gedit("",cont=lyout))
-  lyout[2,1]<-gbutton("Chromosome",cont=lyout,
+  lyout[2,1]<-gbutton("Chromosome...",cont=lyout,
       handler = function(h,...) {
               std<-myselect.list(list=c("all",as.character(get("chromosome",envir=.rqtlnetwork))),multiple=TRUE,title="Select chromosomes...")
               svalue(widgets$QTLchr)<-toString(std)
@@ -224,68 +174,18 @@ function(){
   lyout[7,2]<-(widgets$QTLNotationFont<-gcombobox(c("1","2","3","4"),cont=lyout))
   lyout[7,3]<-gbutton("NotationFontSize",cont=lyout)
   lyout[7,4]<-(widgets$QTLNotationFontSize<-gedit("1",cont=lyout))
-  addHandlerChanged(widgets$QTLtrait,handler=function(h,...){
-          close.cur.dev()
-          QTLPlot()
-      })
-  addHandlerChanged(widgets$QTLcolor,handler=function(h,...){
-          close.cur.dev()
-          QTLPlot()
-  })
-  addHandlerChanged(widgets$QTLchr,handler=function(h,...){
-          close.cur.dev()
-          QTLPlot()
-  })
-  addHandlerChanged(widgets$QTLthreshold,handler=function(h,...){
-          close.cur.dev()
-          QTLPlot()
-  })
-  addHandlerChanged(widgets$QTLclean,handler=function(h,...){
-          close.cur.dev()
-          QTLPlot()
-  })
-  addHandlerChanged(widgets$QTLlineType,handler=function(h,...){
-          close.cur.dev()
-          QTLPlot()
-  })
-  addHandlerChanged(widgets$QTLXlabel,handler=function(h,...){
-          close.cur.dev()
-          QTLPlot()
-      })
-  addHandlerChanged(widgets$QTLXlabelRot,handler=function(h,...){
-          close.cur.dev()
-          QTLPlot()
-      })
-  addHandlerChanged(widgets$QTLXlabelFont,handler=function(h,...){
-          close.cur.dev()
-          QTLPlot()
-  })
-  addHandlerChanged(widgets$QTLXlabelFontSize,handler=function(h,...){
-          close.cur.dev()
-          QTLPlot()
-  })
-  addHandlerChanged(widgets$QTLYlabelFont,handler=function(h,...){
-          close.cur.dev()
-          QTLPlot()
-  })
-  addHandlerChanged(widgets$QTLYlabelFontSize,handler=function(h,...){
-          close.cur.dev()
-          QTLPlot()
-  })
-  addHandlerChanged(widgets$QTLNotationFont,handler=function(h,...){
-          close.cur.dev()
-          QTLPlot()
-  })
-  addHandlerChanged(widgets$QTLNotationFontSize,handler=function(h,...){
-          close.cur.dev()
-          QTLPlot()
-  })
-
+  button.group <- ggroup(container = QTL)
+  ## Push buttons to right
+  addSpring(button.group)
+  gbutton("Run", handler=function(h,...){
+      close.cur.dev()
+      QTLPlot()
+      }, container=button.group)
   ##QTLPlot over
 
   ##QTLdetection
   lyout<-glayout(container=QTLeffect)
-  lyout[1,1]<-gbutton("Trait", cont=lyout,
+  lyout[1,1]<-gbutton("Trait...", cont=lyout,
     handler = function(h,...)
     {
         if(!is.na(get("traitname",envir=.rqtlnetwork)[1]))
@@ -313,51 +213,18 @@ function(){
   lyout[5,2]<-(widgets$EffectMinY<-gedit("",cont=lyout))
   lyout[5,3]<-gbutton("MaxYLabel",cont=lyout)
   lyout[5,4]<-(widgets$EffectMaxY<-gedit("",cont=lyout))
-  addHandlerChanged(widgets$Effectrait,handler=function(h,...){
-          close.cur.dev()
-          QTLeffectPlot()
-      })
-  addHandlerChanged(widgets$EffectXlabelRot,handler=function(h,...){
-          close.cur.dev()
-          QTLeffectPlot()
-      })
-  addHandlerChanged(widgets$EffectXlabelFont,handler=function(h,...){
-          close.cur.dev()
-          QTLeffectPlot()
-  })
-  addHandlerChanged(widgets$EffectXlabelFontSize,handler=function(h,...){
-          close.cur.dev()
-          QTLeffectPlot()
-  })
-  addHandlerChanged(widgets$EffectYlabelFont,handler=function(h,...){
-          close.cur.dev()
-          QTLeffectPlot()
-  })
-  addHandlerChanged(widgets$EffectYlabelFontSize,handler=function(h,...){
-          close.cur.dev()
-          QTLeffectPlot()
-  })
-  addHandlerChanged(widgets$EffectNotationFont,handler=function(h,...){
-          close.cur.dev()
-          QTLeffectPlot()
-  })
-  addHandlerChanged(widgets$EffectNotationFontSize,handler=function(h,...){
-          close.cur.dev()
-          QTLeffectPlot()
-  })
-  addHandlerChanged(widgets$EffectMinY,handler=function(h,...){
-          close.cur.dev()
-          QTLeffectPlot()
-  })
-  addHandlerChanged(widgets$EffectMaxY,handler=function(h,...){
-          close.cur.dev()
-          QTLeffectPlot()
-  })
+  button.group <- ggroup(container = QTLeffect)
+  ## Push buttons to right
+  addSpring(button.group)
+  gbutton("Run", handler=function(h,...){
+      close.cur.dev()
+      QTLeffectPlot()
+      }, container=button.group)
   ##over
 
   ##MII2DPlot
   lyout<-glayout(container=MII)
-  lyout[1,1]<-gbutton("Trait", cont=lyout,
+  lyout[1,1]<-gbutton("Trait...", cont=lyout,
     handler = function(h,...)
     {
         if(!is.na(get("traitname",envir=.rqtlnetwork)[1]))
@@ -367,17 +234,32 @@ function(){
         }
     })
   lyout[1,2]<-(widgets$twodtrait<-gedit("",cont=lyout))
-
-  addHandlerChanged(widgets$twodtrait,handler=function(h,...){
-          close.cur.dev()
-          MII2DPlot()
-      })
+  lyout[2,1]<-gbutton("ColorkeyFont",cont=lyout)
+  lyout[2,2]<-(widgets$colorkeyFont<-gcombobox(c("1","2","3","4"),cont=lyout))
+  lyout[2,3]<-gbutton("ColorkeyFontSize",cont=lyout)
+  lyout[2,4]<-(widgets$colorkeyFontSize<-gedit("1",cont=lyout))
+  lyout[3,1]<-gbutton("ThresholdFont",cont=lyout)
+  lyout[3,2]<-(widgets$thresholdFont<-gcombobox(c("1","2","3","4"),cont=lyout))
+  lyout[3,3]<-gbutton("ThresholdFontSize",cont=lyout)
+  lyout[3,4]<-(widgets$thresholdFontSize<-gedit("1",cont=lyout))
+  lyout[4,1]<-gbutton("LeftBottomFont",cont=lyout)
+  lyout[4,2]<-(widgets$leftBottomFont<-gcombobox(c("1","2","3","4"),cont=lyout))
+  lyout[4,3]<-gbutton("LeftBottomFontSize",cont=lyout)
+  lyout[4,4]<-(widgets$leftBottomFontSize<-gedit("1",cont=lyout))
+  
+  button.group <- ggroup(container = MII)
+  ## Push buttons to right
+  addSpring(button.group)
+  gbutton("Run", handler=function(h,...){
+      close.cur.dev()
+      MII2DPlot()
+      }, container=button.group)
   ##MII2DPlot over
 
   ##epiPlot
 
   lyout<-glayout(container=Epistasis)
-  lyout[1,1]<-gbutton("Trait", cont=lyout,
+  lyout[1,1]<-gbutton("Trait...", cont=lyout,
     handler = function(h,...)
     {
         if(!is.na(get("traitname",envir=.rqtlnetwork)[1]))
@@ -388,20 +270,38 @@ function(){
         }
     })
   lyout[1,2]<-(widgets$epitrait<-gedit("",cont=lyout))
-  lyout[2,1]<-gbutton("Blank",cont=lyout)
-  lyout[2,2]<-(widgets$blank<-gedit("10",cont=lyout))
-  addHandlerChanged(widgets$epitrait,handler=function(h,...){
-          close.cur.dev()
-          epiPlot()
-      })
-  addHandlerChanged(widgets$blank,handler=function(h,...){
-          close.cur.dev()
-          epiPlot()
-      })
+  lyout[1,3]<-gbutton("Blank",cont=lyout)
+  lyout[1,4]<-(widgets$blank<-gedit("10",cont=lyout))
+  lyout[2,1]<-gbutton("ColorkeyFont",cont=lyout)
+  lyout[2,2]<-(widgets$epi.colorkeyFont<-gcombobox(c("1","2","3","4"),cont=lyout))
+  lyout[2,3]<-gbutton("ColorkeyFontSize",cont=lyout)
+  lyout[2,4]<-(widgets$epi.colorkeyFontSize<-gedit("1",cont=lyout))
+  lyout[3,1]<-gbutton("ThresholdFont",cont=lyout)
+  lyout[3,2]<-(widgets$epi.thresholdFont<-gcombobox(c("1","2","3","4"),cont=lyout))
+  lyout[3,3]<-gbutton("ThresholdFontSize",cont=lyout)
+  lyout[3,4]<-(widgets$epi.thresholdFontSize<-gedit("1",cont=lyout))
+  lyout[4,1]<-gbutton("LeftBottomFont",cont=lyout)
+  lyout[4,2]<-(widgets$epi.leftBottomFont<-gcombobox(c("1","2","3","4"),cont=lyout))
+  lyout[4,3]<-gbutton("LeftBottomFontSize",cont=lyout)
+  lyout[4,4]<-(widgets$epi.leftBottomFontSize<-gedit("1",cont=lyout))
+  lyout[5,1]<-gbutton("RightTopFont",cont=lyout)
+  lyout[5,2]<-(widgets$epi.rightTopFont<-gcombobox(c("1","2","3","4"),cont=lyout))
+  lyout[5,3]<-gbutton("RightTopFontSize",cont=lyout)
+  lyout[5,4]<-(widgets$epi.rightTopFontSize<-gedit("0.6",cont=lyout))
+    
+  button.group <- ggroup(container = Epistasis)
+  ## Push buttons to right
+  addSpring(button.group)
+  gbutton("Run", handler=function(h,...){
+      close.cur.dev()
+      epiPlot()
+      }, container=button.group)
+  ##epistasis over
+
 
   ##QTLNetwork Plot
   lyout<-glayout(container=QTLNetwork)
-  lyout[1,1]<-gbutton("Trait", cont=lyout,
+  lyout[1,1]<-gbutton("Trait...", cont=lyout,
     handler = function(h,...)
     {
         if(!is.na(get("traitname",envir=.rqtlnetwork)[1]))
@@ -442,63 +342,13 @@ function(){
   lyout[8,2]<-(widgets$notationFont<-gedit("1",cont=lyout))
   lyout[8,3]<-gbutton("NotationFontSize",cont=lyout)
   lyout[8,4]<-(widgets$notationFontSize<-gedit("1",cont=lyout))
-
-  addHandlerChanged(widgets$QTLNtrait,handler=function(h,...){
-          close.cur.dev()
-          QTLNetworkPlot()
-      })
-  addHandlerChanged(widgets$radii,handler=function(h,...){
-          close.cur.dev()
-          QTLNetworkPlot()
-      })
-  addHandlerChanged(widgets$showMarker,handler=function(h,...){
-          close.cur.dev()
-          QTLNetworkPlot()
-      })
-  addHandlerChanged(widgets$showValue,handler=function(h,...){
-          close.cur.dev()
-          QTLNetworkPlot()
-      })
-  addHandlerChanged(widgets$markerPosition,handler=function(h,...){
-          close.cur.dev()
-          QTLNetworkPlot()
-      })
-  addHandlerChanged(widgets$valuePosition,handler=function(h,...){
-          close.cur.dev()
-          QTLNetworkPlot()
-      })
-  addHandlerChanged(widgets$markerFont,handler=function(h,...){
-          close.cur.dev()
-          QTLNetworkPlot()
-      })
-  addHandlerChanged(widgets$markerFontSize,handler=function(h,...){
-          close.cur.dev()
-          QTLNetworkPlot()
-      })
-  addHandlerChanged(widgets$valueFont,handler=function(h,...){
-          close.cur.dev()
-          QTLNetworkPlot()
-      })
-  addHandlerChanged(widgets$valueFontSize,handler=function(h,...){
-          close.cur.dev()
-          QTLNetworkPlot()
-      })
-  addHandlerChanged(widgets$chrFont,handler=function(h,...){
-          close.cur.dev()
-          QTLNetworkPlot()
-      })
-  addHandlerChanged(widgets$chrFontSize,handler=function(h,...){
-          close.cur.dev()
-          QTLNetworkPlot()
-      })
-  addHandlerChanged(widgets$notationFont,handler=function(h,...){
-          close.cur.dev()
-          QTLNetworkPlot()
-      })
-  addHandlerChanged(widgets$notationFontSize,handler=function(h,...){
-          close.cur.dev()
-          QTLNetworkPlot()
-      })
+  button.group <- ggroup(container = QTLNetwork)
+  ## Push buttons to right
+  addSpring(button.group)
+  gbutton("Run", handler=function(h,...){
+      close.cur.dev()
+      QTLNetworkPlot()
+      }, container=button.group)
   ##QTLNetwork Plot over
   bind<-function(a,b){
         syn<-a
@@ -570,6 +420,7 @@ function(){
       if(chr[1]!="all") chr<-as.numeric(chr)
       #print(traitVal)
       traitname<-get("traitname",envir=.rqtlnetwork)
+      traitValname<-traitname[traitVal]
       #traitVal<-as.numeric(strsplit(svalue(widgets$trait),split=",")[[1]])
       colorVal<-strsplit(svalue(widgets$color),split=",")[[1]]
       criticalValue<-svalue(widgets$threshold)
@@ -619,6 +470,7 @@ function(){
                }
       #change mapfile to map file style
       if(chr[1]!="all") mapfile<-mapfile[,chr]
+      if(chr[1]!="all"&length(chr)==1) dim(mapfile)<-c(length(mapfile),1)
       i<-j<-k<-u<-1
       x<-xmax<-xxlabel<-0
       xatt<-xlabel<-0
@@ -637,11 +489,13 @@ function(){
        }
       #delete rep numbers
       if(chr[1]!="all"){
-          a<-0
-          for(i in 1:(length(chrlth[chr])-1)){
-              a[i]<-sum(chrlth[chr][1:i])
-          }
-          MI_x<-x[-a]
+          if(length(chr)>1){
+              a<-0
+              for(i in 1:(length(chrlth[chr])-1)){
+                  a[i]<-sum(chrlth[chr][1:i])
+              }
+              MI_x<-x[-a]
+          }else MI_x<-x
           chr_start<-1
           chr_end<-0
           u<-2
@@ -662,9 +516,9 @@ function(){
           chr_label<-1:chrnm
       }
       #map file done
-      
 
-      
+
+
       if(length(traitVal)==1) criticalValue<-"mean"
       traitnum<-grep("_trait",qnkfile[,1])[traitVal]
       #traitname<-as.character(qnkfile[traitnum,3])
@@ -681,14 +535,16 @@ function(){
       if(chr[1]!="all")
       {
           plot.index<-chr_start[chr][1]:chr_end[chr][1]
-          for(i in 2:length(chr)){
-              plot.index<-bind(plot.index,chr_start[chr][i]:chr_end[chr][i])
+          if(length(chr)>1){
+            for(i in 2:length(chr)){
+                plot.index<-bind(plot.index,chr_start[chr][i]:chr_end[chr][i])
+            }
           }
           MI.Y<-matrix(0,nrow=length(plot.index),ncol=length(traitVal))
           for(i in 1:length(traitVal)){
               MI.Y[,i]<-MI_y[,i][plot.index]
           }
-          MI_Y<-MI.Y
+          MI_y<-MI.Y
       }
 
       if(criticalValue=="mean"){
@@ -725,7 +581,7 @@ function(){
               grid.segments(x0=legendx[1:length(traitVal)],x1=legendx[1:length(traitVal)]+unit(0.05,"npc"),
                        y0=legendy[1:length(traitVal)],y1=legendy[1:length(traitVal)],
                        gp=gpar(col=colorVal,lty=linetype))
-              grid.text(traitname,x=legendx[1:length(traitVal)]+unit(0.06,"npc"),
+              grid.text(traitValname,x=legendx[1:length(traitVal)]+unit(0.06,"npc"),
                         y=legendy[1:length(traitVal)],just=c("left"),
                         gp=gpar(cex=notationFontSize,font=notationFont))
           #}
@@ -742,8 +598,10 @@ function(){
           grid.line.to(MI_x[length(MI_x)],MI_y[length(MI_y[,j]),j],default.units="native",gp=gpar(col=colorVal[j],if(LineType){lty=linetype[j]}))
       }
       #for(i in 1:length(xatt)){
+        if(chr[1]=="all"|length(chr)>1){
                grid.segments(x0=unit(xatt,"native"),y0=unit(0,"npc"),
                              x1=unit(xatt,"native"),y1=unit(1,"npc"))
+        }
         #}
         if(criticalValue=="mean"){
           if(clean) grid.rect(x=unit(c(0,xatt[-length(xatt)]),"native"),y=unit(0,"npc"),
@@ -775,16 +633,11 @@ function(){
         grid.segments(x0=unit(unique(x),"native"),y0=unit(0,"npc"),
                       x1=unit(unique(x),"native"),y1=unit(0.01,"npc"))
         grid.text("F Value",x=unit(-3,"lines"), y=unit(0.5,"npc"),rot=90)
-        #grid.text(paste("The traitVal of",traitVal,sep=" "),x=unit(0.5,"npc"), y=unit(1.05,"npc"),
-        #          gp=gpar(cex=1.5,font=2))
-        #grid.text(paste("Critical value is",qtl_cv,sep=" "),x=unit(0.5,"npc"),
-        #            y=unit(-3,"lines"))
-
 
     }
 
 
-    MII2DPlot<-function()
+  MII2DPlot<-function()
   {
     if(svalue(widgets$twodtrait)!="")
     {
@@ -792,7 +645,16 @@ function(){
                 x<-grep(item,get("traitname",envir=.rqtlnetwork))
             }))
           #trait<-as.numeric(svalue(widgets$twodtrait))
+          colorkeyFont<-as.numeric(svalue(widgets$colorkeyFont))
+          colorkeyFontSize<-as.numeric(svalue(widgets$colorkeyFontSize))
+          ThresholdFont<-as.numeric(svalue(widgets$thresholdFont))
+          ThresholdFontSize<-as.numeric(svalue(widgets$thresholdFontSize))
+          leftBottomFont<-as.numeric(svalue(widgets$leftBottomFont))
+          leftBottomFontSize<-as.numeric(svalue(widgets$leftBottomFontSize))
+
+
           qnkfile<-get("qnkfile",envir=.rqtlnetwork)
+
           traitnum<-grep("_trait",qnkfile[,1])[trait]
           traitname<-as.character(qnkfile[traitnum,3])
           trait2d<-grep("_plot_interval_interaction",qnkfile[,1])[trait]
@@ -852,18 +714,23 @@ function(){
           grid.rect(0.5,0,height=unit(1,"lines"),width=unit(0.8,"npc"),just=c("center","bottom"))
           }
           colorkey(rev(heat.colors(50)))
-          grid.text(round(0:4*top/4,digits=1),x=unit(seq(0.1,0.9,length=5),"npc"),y=unit(-0.5,"lines"))
-          cv<-c_value/top
+          grid.text(round(0:4*top/4,digits=1),x=unit(seq(0.1,0.9,length=5),"npc"),y=unit(-0.5,"lines")
+                    ,gp=gpar(font=colorkeyFont,cex=colorkeyFontSize)
+                    )
+          cv<-c_value/top*0.8+0.1
           grid.lines(x = unit(c(cv, cv), "npc"),y = unit(c(0.5, 0.7), "npc"))
           grid.text(paste("Threshold =",c_value,sep=" "),x=unit(cv,"npc")+unit(1,"mm"),
-                    y=unit(0.5,"npc")+unit(1,"mm"),just=c("left","bottom"))
+                    y=unit(0.5,"npc")+unit(1,"mm"),just=c("left","bottom")
+                    ,gp=gpar(font=ThresholdFont,cex=ThresholdFontSize)
+                    )
           popViewport()
           pushViewport(viewport(layout.pos.row=2))
           #pushViewport(plotViewport(c(2,2,0,0)))
           TwoDplot<-levelplot(z~x*y,gr,col.regions=rev(heat.colors(50)),
                               xlab="interval",ylab="interval",colorkey=F,
                               xlim=range(x),ylim=range(y),
-                              scales=list(at=round(0:5*max(x)/5),labels=round(0:5*max(x)/5)))
+                              scales=list(at=round(0:5*max(x)/5),labels=round(0:5*max(x)/5),
+                                          cex=leftBottomFontSize,font=leftBottomFont))
           print(TwoDplot,newpage=F)
           popViewport()
     }
@@ -927,6 +794,7 @@ function(){
                  }
         #change mapfile to map file style
         if(chr[1]!="all") mapfile<-mapfile[,chr]
+        if(chr[1]!="all"&length(chr)==1) dim(mapfile)<-c(length(mapfile),1)
         i<-j<-k<-u<-1
         x<-xmax<-xxlabel<-0
         xatt<-xlabel<-0
@@ -995,9 +863,11 @@ function(){
             qtl_dis<-qtl_dis_sd
             qtl_value<-qtl_value_sd
             rowlth<-length(qtl_chr)
-            chr_del<-chrlth[chr][1]
-            for(i in 2:length(chr)) chr_del[i]<-sum(chrlth[chr][1:i])
-            uniq_x<-x[-chr_del]
+            if(length(chr)>1){
+              chr_del<-chrlth[chr][1]
+              for(i in 2:length(chr)) chr_del[i]<-sum(chrlth[chr][1:i])
+              uniq_x<-x[-chr_del]
+            }else uniq_x<-x
             chr_label<-chr
             qtl_x<-0
             u<-1;k<-1
@@ -1072,8 +942,10 @@ function(){
 
         }
         #for(i in 1:length(xatt)){
+        if(chr[1]=="all"|length(chr)>1){       
                grid.segments(x0=unit(xatt,"native"),y0=unit(0,"npc"),
                              x1=unit(xatt,"native"),y1=unit(1,"npc"))
+        }
         #}
         if(criticalValue=="mean"){
           if(clean) grid.rect(x=unit(c(0,xatt[-length(xatt)]),"native"),y=unit(0,"npc"),
@@ -1205,7 +1077,7 @@ function(){
       #          x=legendx[1:(length(AEvalue[1,])+1)]+unit(0.1,"npc"),
       #          y=legendy[1:(length(AEvalue[1,])+1)],just="left",
       #          gp=gpar(cex=NotationFontSize,font=NotationFont))
-      grid.text(c("QTL",paste("QTL in E",1:length(AEvalue[1,]),sep="")),
+      grid.text(c("QTL",paste("QE",1:length(AEvalue[1,]),sep="")),
                 x=legendx[1:(length(AEvalue[1,])+1)]+unit(0.1,"npc"),
                 y=legendy[1:(length(AEvalue[1,])+1)],just="left",
                 gp=gpar(cex=NotationFontSize,font=NotationFont))
@@ -1292,6 +1164,15 @@ function(){
             }))
     #trait<-as.numeric(svalue(widgets$epitrait))
     blank<-as.numeric(svalue(widgets$blank))
+    colorkeyFont<-as.numeric(svalue(widgets$epi.colorkeyFont))
+    colorkeyFontSize<-as.numeric(svalue(widgets$epi.colorkeyFontSize))
+    ThresholdFont<-as.numeric(svalue(widgets$epi.thresholdFont))
+    ThresholdFontSize<-as.numeric(svalue(widgets$epi.thresholdFontSize))
+    leftBottomFont<-as.numeric(svalue(widgets$epi.leftBottomFont))
+    leftBottomFontSize<-as.numeric(svalue(widgets$epi.leftBottomFontSize))
+    rightTopFont<-as.numeric(svalue(widgets$epi.rightTopFont))
+    rightTopFontSize<-as.numeric(svalue(widgets$epi.rightTopFontSize))
+
     mapfile<-get("mapfile",envir=.rqtlnetwork)
     qnkfile<-get("qnkfile",envir=.rqtlnetwork)
 
@@ -1470,7 +1351,7 @@ function(){
                                   labels=c(epi_xlabel_dn),rot=90),
                                   y=list(at=c(epi_yat_left),
                                   labels=c(epi_ylabel_left)),
-                                  cex=0.7)
+                                  cex=leftBottomFontsize,font=leftBottomFont)
     )
     colorkey <- function(colors){
     n <- 100
@@ -1489,17 +1370,23 @@ function(){
     pushViewport(viewport(layout=vplay))
     pushViewport(viewport(layout.pos.row=1))
     colorkey(rev(heat.colors(50)))
-    grid.text(round(0:4*top/4,digits=1),x=unit(seq(0.1,0.9,length=5),"npc"),y=unit(-0.5,"lines"))
+    grid.text(round(0:4*top/4,digits=1),x=unit(seq(0.1,0.9,length=5),"npc"),y=unit(-0.5,"lines"),
+              gp=gpar(font=colorkeyFont,cex=colorkeyFontSize)
+    )
     cv<-c_value/top
     grid.lines(x = unit(c(cv*0.8+0.1, cv*0.8+0.1), "npc"),y = unit(c(0.5, 0.7), "npc"))
     grid.text(paste("Threshold =",round(c_value,digits=1),sep=" "),x=unit(cv*0.8+0.1,"npc")+unit(1,"mm"),
-              y=unit(0.5,"npc")+unit(1,"mm"),just=c("left","bottom"))
+              y=unit(0.5,"npc")+unit(1,"mm"),just=c("left","bottom"),
+              gp=gpar(font=ThresholdFont,cex=ThresholdFontSize)
+    )
     popViewport()
     pushViewport(viewport(layout.pos.row=2))
     print(epiplot,newpage=F)
     trellis.focus("panel", 1, 1, clip.off=T, highlight = FALSE)
-    panel.axis(at=epi_xat_up,labels=epi_xlabel_up,side=c("top"),outside=T,rot=0,text.cex=0.6,line.lty="dotted")
-    panel.axis(at=epi_yat_right,labels=epi_ylabel_right,side=c("right"),outside=T,text.cex=0.6,line.lty="dotted")
+    panel.axis(at=epi_xat_up,labels=epi_xlabel_up,side=c("top"),outside=T,rot=0,
+               text.font=rightTopFont,text.cex=rightTopFontSize,line.lty="dotted")
+    panel.axis(at=epi_yat_right,labels=epi_ylabel_right,side=c("right"),outside=T,
+               text.font=rightTopFont,text.cex=rightTopFontSize,line.lty="dotted")
     trellis.unfocus()
   }
   QTLNetworkPlot<-function(){
