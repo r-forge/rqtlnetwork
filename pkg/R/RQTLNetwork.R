@@ -1351,7 +1351,7 @@ function(){
                                   labels=c(epi_xlabel_dn),rot=90),
                                   y=list(at=c(epi_yat_left),
                                   labels=c(epi_ylabel_left)),
-                                  cex=leftBottomFontsize,font=leftBottomFont)
+                                  cex=leftBottomFontSize,font=leftBottomFont)
     )
     colorkey <- function(colors){
     n <- 100
