@@ -50,7 +50,7 @@ function(){
   nb = gnotebook(cont = gp)
   MI = ggroup(horizontal=FALSE, cont=nb, label="MI")
   QTL =ggroup(horizontal=FALSE, cont=nb, label="QTL")
-  QTLeffect =  ggroup(horizontal=FALSE, cont=nb, label="QTLdetection")
+  QTLeffect =  ggroup(horizontal=FALSE, cont=nb, label="QE")
   MII = ggroup(horizontal=FALSE, cont=nb, label="MII")
   Epistasis =ggroup(horizontal=FALSE, cont=nb, label="Epistasis")
   QTLNetwork = ggroup(horizontal=FALSE, cont=nb, label="QTLNetwork")
@@ -109,6 +109,8 @@ function(){
   lyout[7,2]<-(widgets$NotationFont<-gcombobox(c("1","2","3","4"),cont=lyout))
   lyout[7,3]<-gbutton("NotationFontSize",cont=lyout)
   lyout[7,4]<-(widgets$NotationFontSize<-gedit("1",cont=lyout))
+  lyout[8,1]<-gbutton("LineWidth",cont=lyout)
+  lyout[8,2]<-(widgets$LineWidth<-gedit("1",cont=lyout))
   button.group <- ggroup(container = MI)
   ## Push buttons to right
   addSpring(button.group)
@@ -174,6 +176,8 @@ function(){
   lyout[7,2]<-(widgets$QTLNotationFont<-gcombobox(c("1","2","3","4"),cont=lyout))
   lyout[7,3]<-gbutton("NotationFontSize",cont=lyout)
   lyout[7,4]<-(widgets$QTLNotationFontSize<-gedit("1",cont=lyout))
+  lyout[8,1]<-gbutton("LineWidth",cont=lyout)
+  lyout[8,2]<-(widgets$QTLlineWidth<-gedit("1",cont=lyout))
   button.group <- ggroup(container = QTL)
   ## Push buttons to right
   addSpring(button.group)
@@ -287,7 +291,7 @@ function(){
   lyout[5,1]<-gbutton("RightTopFont",cont=lyout)
   lyout[5,2]<-(widgets$epi.rightTopFont<-gcombobox(c("1","2","3","4"),cont=lyout))
   lyout[5,3]<-gbutton("RightTopFontSize",cont=lyout)
-  lyout[5,4]<-(widgets$epi.rightTopFontSize<-gedit("1",cont=lyout))
+  lyout[5,4]<-(widgets$epi.rightTopFontSize<-gedit("0.6",cont=lyout))
     
   button.group <- ggroup(container = Epistasis)
   ## Push buttons to right
@@ -306,7 +310,7 @@ function(){
     {
         if(!is.na(get("traitname",envir=.rqtlnetwork)[1]))
         {
-            std<-myselect.list(list=get("traitname",envir=.rqtlnetwork),multiple=TRUE)
+            std<-myselect.list(list=get("traitname",envir=.rqtlnetwork),multiple=FALSE)
             svalue(widgets$QTLNtrait)<-toString(std)
 
         }
@@ -420,6 +424,7 @@ function(){
       if(chr[1]!="all") chr<-as.numeric(chr)
       #print(traitVal)
       traitname<-get("traitname",envir=.rqtlnetwork)
+      traitValname<-traitname[traitVal]
       #traitVal<-as.numeric(strsplit(svalue(widgets$trait),split=",")[[1]])
       colorVal<-strsplit(svalue(widgets$color),split=",")[[1]]
       criticalValue<-svalue(widgets$threshold)
@@ -434,6 +439,7 @@ function(){
       ylabelFontSize<-as.numeric(svalue(widgets$YlabelFontSize))
       notationFont<-as.numeric(svalue(widgets$NotationFont))
       notationFontSize<-as.numeric(svalue(widgets$NotationFontSize))
+      LineWidth<-as.numeric(svalue(widgets$LineWidth))
       qnkfile<-get("qnkfile",envir=.rqtlnetwork)
       mapfile<-get("mapfile",envir=.rqtlnetwork)
 
@@ -580,7 +586,7 @@ function(){
               grid.segments(x0=legendx[1:length(traitVal)],x1=legendx[1:length(traitVal)]+unit(0.05,"npc"),
                        y0=legendy[1:length(traitVal)],y1=legendy[1:length(traitVal)],
                        gp=gpar(col=colorVal,lty=linetype))
-              grid.text(traitname,x=legendx[1:length(traitVal)]+unit(0.06,"npc"),
+              grid.text(traitValname,x=legendx[1:length(traitVal)]+unit(0.06,"npc"),
                         y=legendy[1:length(traitVal)],just=c("left"),
                         gp=gpar(cex=notationFontSize,font=notationFont))
           #}
@@ -591,13 +597,16 @@ function(){
       for(j in 1:length(traitVal)){
           grid.move.to(MI_x[1],MI_y[1,j],default.units="native")
           for(i in 1:(length(MI_x)-2)){
-                 grid.line.to(MI_x[i+1],MI_y[i,j],default.units="native",gp=gpar(col=colorVal[j],if(LineType){lty=linetype[j]}))
-                 grid.line.to(MI_x[i+1],MI_y[i+1,j],default.units="native",gp=gpar(col=colorVal[j],if(LineType){lty=linetype[j]}))
+                 grid.line.to(MI_x[i+1],MI_y[i,j],default.units="native",gp=gpar(col=colorVal[j],lwd=LineWidth,if(LineType){lty=linetype[j]}))
+                 grid.line.to(MI_x[i+1],MI_y[i+1,j],default.units="native",gp=gpar(col=colorVal[j],lwd=LineWidth,if(LineType){lty=linetype[j]}))
                  }
-          grid.line.to(MI_x[length(MI_x)],MI_y[length(MI_y[,j]),j],default.units="native",gp=gpar(col=colorVal[j],if(LineType){lty=linetype[j]}))
+          grid.line.to(MI_x[length(MI_x)],MI_y[length(MI_y[,j]),j],default.units="native",gp=gpar(col=colorVal[j],lwd=LineWidth,if(LineType){lty=linetype[j]}))
       }
       #for(i in 1:length(xatt)){
         if(chr[1]=="all"|length(chr)>1){
+               grid.segments(x0=unit(xatt,"native"),y0=unit(0,"npc"),
+                             x1=unit(xatt,"native"),y1=unit(1,"npc"),
+                             gp=gpar(col="white",lwd=LineWidth+0.2))
                grid.segments(x0=unit(xatt,"native"),y0=unit(0,"npc"),
                              x1=unit(xatt,"native"),y1=unit(1,"npc"))
         }
@@ -608,7 +617,7 @@ function(){
                                    just=c("left","bottom"),gp=gpar(fill="white"))
           grid.segments(x0=unit(0,"npc"),y0=unit(crt_value,"native"),
                         x1=unit(1,"npc"),y1=unit(crt_value,"native"))
-          grid.text(crt_value,x=unit(1.005,"npc"),y=unit(crt_value,"native"),just="left")
+          grid.text(crt_value,x=unit(1.01,"npc"),y=unit(crt_value,"native"),just="left")
         }else{
           if(clean) grid.rect(x=unit(c(0,xatt[-length(xatt)]),"native"),y=unit(0,"npc"),
                                    width=unit(xatt-c(0,xatt[-length(xatt)]),"native"),height=unit(min(c_value),"native"),
@@ -617,7 +626,7 @@ function(){
                         x1=unit(1,"npc"),y1=unit(c_value,"native"),
                         gp=gpar(col=colorVal[1:length(c_value)],
                                 if(LineType){lty=linetype[1:length(c_value)]}))
-          grid.text(crt_value,x=unit(1,"npc"),y=unit(crt_value,"native"),just="left",
+          grid.text(crt_value,x=unit(1.01,"npc"),y=unit(crt_value,"native"),just="left",
                     gp=gpar(col=colorVal[1:length(c_value)][hold]))
         }
         if(xlabelform=="Chromosome") {
@@ -631,7 +640,8 @@ function(){
         grid.edit(gPath("axis2","labels"),gp=gpar(font=ylabelFont,cex=ylabelFontSize))
         grid.segments(x0=unit(unique(x),"native"),y0=unit(0,"npc"),
                       x1=unit(unique(x),"native"),y1=unit(0.01,"npc"))
-        grid.text("F Value",x=unit(-3,"lines"), y=unit(0.5,"npc"),rot=90)
+        grid.text("Value",x=unit(-3,"lines"), y=unit(0.54,"npc"),rot=90)
+        grid.text("F",x=unit(-3,"lines"), y=unit(0.35,"npc"),rot=90,gp=gpar(font=3))
 
     }
 
@@ -645,14 +655,15 @@ function(){
             }))
           #trait<-as.numeric(svalue(widgets$twodtrait))
           colorkeyFont<-as.numeric(svalue(widgets$colorkeyFont))
-          colorkeyFontsize<-as.numeric(svalue(widgets$colorkeyFontsize))
-          thresholdFont<-as.numeric(svalue(widgets$thresholdFont))
-          thresholdFontsize<-as.numeric(svalue(widgets$thresholdFontsize))
+          colorkeyFontSize<-as.numeric(svalue(widgets$colorkeyFontSize))
+          ThresholdFont<-as.numeric(svalue(widgets$thresholdFont))
+          ThresholdFontSize<-as.numeric(svalue(widgets$thresholdFontSize))
           leftBottomFont<-as.numeric(svalue(widgets$leftBottomFont))
-          leftBottomFontsize<-as.numeric(svalue(widgets$leftBottomFontsize))
-          
-          
+          leftBottomFontSize<-as.numeric(svalue(widgets$leftBottomFontSize))
+
+
           qnkfile<-get("qnkfile",envir=.rqtlnetwork)
+
           traitnum<-grep("_trait",qnkfile[,1])[trait]
           traitname<-as.character(qnkfile[traitnum,3])
           trait2d<-grep("_plot_interval_interaction",qnkfile[,1])[trait]
@@ -715,7 +726,7 @@ function(){
           grid.text(round(0:4*top/4,digits=1),x=unit(seq(0.1,0.9,length=5),"npc"),y=unit(-0.5,"lines")
                     ,gp=gpar(font=colorkeyFont,cex=colorkeyFontSize)
                     )
-          cv<-c_value/top
+          cv<-c_value/top*0.8+0.1
           grid.lines(x = unit(c(cv, cv), "npc"),y = unit(c(0.5, 0.7), "npc"))
           grid.text(paste("Threshold =",c_value,sep=" "),x=unit(cv,"npc")+unit(1,"mm"),
                     y=unit(0.5,"npc")+unit(1,"mm"),just=c("left","bottom")
@@ -728,7 +739,7 @@ function(){
                               xlab="interval",ylab="interval",colorkey=F,
                               xlim=range(x),ylim=range(y),
                               scales=list(at=round(0:5*max(x)/5),labels=round(0:5*max(x)/5),
-                                          cex=leftBottomFontsize,font=leftBottomFont))
+                                          cex=leftBottomFontSize,font=leftBottomFont))
           print(TwoDplot,newpage=F)
           popViewport()
     }
@@ -757,6 +768,7 @@ function(){
       ylabelFontSize<-as.numeric(svalue(widgets$QTLYlabelFontSize))
       notationFont<-as.numeric(svalue(widgets$QTLNotationFont))
       notationFontSize<-as.numeric(svalue(widgets$QTLNotationFontSize))
+      LineWidth<-as.numeric(svalue(widgets$QTLlineWidth))
       mapfile<-get("mapfile",envir=.rqtlnetwork)
       qnkfile<-get("qnkfile",envir=.rqtlnetwork)
 
@@ -936,11 +948,14 @@ function(){
 
         for(i in 1:length(traitVal)){
             grid.lines(x=unit(qtl_x,"native"),y=unit(qtl_value[,i],"native"),
-                       gp=gpar(col=colorVal[i],if(LineType) lty=linetype[i]))
+                       gp=gpar(col=colorVal[i],lwd=LineWidth,if(LineType) lty=linetype[i]))
 
         }
         #for(i in 1:length(xatt)){
         if(chr[1]=="all"|length(chr)>1){       
+               grid.segments(x0=unit(xatt,"native"),y0=unit(0,"npc"),
+                             x1=unit(xatt,"native"),y1=unit(1,"npc"),
+                             gp=gpar(col="white",lwd=0.2+LineWidth))
                grid.segments(x0=unit(xatt,"native"),y0=unit(0,"npc"),
                              x1=unit(xatt,"native"),y1=unit(1,"npc"))
         }
@@ -951,7 +966,7 @@ function(){
                                    just=c("left","bottom"),gp=gpar(fill="white"))
           grid.segments(x0=unit(0,"npc"),y0=unit(crt_value,"native"),
                         x1=unit(1,"npc"),y1=unit(crt_value,"native"))
-          grid.text(crt_value,x=unit(1.005,"npc"),y=unit(crt_value,"native"),just="left")
+          grid.text(crt_value,x=unit(1.02,"npc"),y=unit(crt_value,"native"),just="left")
         }else{
           if(clean) grid.rect(x=unit(c(0,xatt[-length(xatt)]),"native"),y=unit(0,"npc"),
                                    width=unit(xatt-c(0,xatt[-length(xatt)]),"native"),height=unit(min(c_value),"native"),
@@ -960,7 +975,7 @@ function(){
                         x1=unit(1,"npc"),y1=unit(c_value,"native"),
                         gp=gpar(col=colorVal[1:length(c_value)],
                                 if(LineType) lty=linetype[1:length(c_value)]))
-          grid.text(crt_value,x=unit(1,"npc"),y=unit(crt_value,"native"),just="left",
+          grid.text(crt_value,x=unit(1.02,"npc"),y=unit(crt_value,"native"),just="left",
                     gp=gpar(col=colorVal[1:length(c_value)][hold]))
         }
         if(xlabelform=="Chromosome") {
@@ -974,7 +989,8 @@ function(){
         grid.edit(gPath("axis2","labels"),gp=gpar(font=ylabelFont,cex=ylabelFontSize))
         grid.segments(x0=unit(unique(x),"native"),y0=unit(0,"npc"),
                       x1=unit(unique(x),"native"),y1=unit(0.01,"npc"))
-        grid.text("F Value",x=unit(-3,"lines"), y=unit(0.5,"npc"),rot=90)
+        grid.text("Value",x=unit(-3,"lines"), y=unit(0.54,"npc"),rot=90)
+        grid.text("F",x=unit(-3,"lines"), y=unit(0.35,"npc"),rot=90,gp=gpar(font=3))
   }
 
   QTLeffectPlot<-function(){
@@ -1061,8 +1077,8 @@ function(){
       pushViewport(viewport(layout=vplay))
       pushViewport(viewport(layout.pos.col=2,name="col2"))
       #heights<-convertHeight(stringHeight("A"),"npc")
-      legendy<-unit(29:1/31,"npc")
-      legendx<-unit(rep(0,29),"npc")
+      legendy<-unit(19:1/21,"npc")
+      legendx<-unit(rep(0,19),"npc")
       grid.points(x=legendx[1:(length(AEvalue[1,])+1)],y=legendy[1:(length(AEvalue[1,])+1)],
                   pch=c(20,pchIndex),gp=gpar(col=c("red",color),fill=c("red",color)))
       grid.points(x=legendx[2:3+length(AEvalue[1,])],y=legendy[2:3+length(AEvalue[1,])],
@@ -1163,13 +1179,13 @@ function(){
     #trait<-as.numeric(svalue(widgets$epitrait))
     blank<-as.numeric(svalue(widgets$blank))
     colorkeyFont<-as.numeric(svalue(widgets$epi.colorkeyFont))
-    colorkeyFontsize<-as.numeric(svalue(widgets$epi.colorkeyFontsize))
-    thresholdFont<-as.numeric(svalue(widgets$epi.thresholdFont))
-    thresholdFontsize<-as.numeric(svalue(widgets$epi.thresholdFontsize))
+    colorkeyFontSize<-as.numeric(svalue(widgets$epi.colorkeyFontSize))
+    ThresholdFont<-as.numeric(svalue(widgets$epi.thresholdFont))
+    ThresholdFontSize<-as.numeric(svalue(widgets$epi.thresholdFontSize))
     leftBottomFont<-as.numeric(svalue(widgets$epi.leftBottomFont))
-    leftBottomFontsize<-as.numeric(svalue(widgets$epi.leftBottomFontsize))
+    leftBottomFontSize<-as.numeric(svalue(widgets$epi.leftBottomFontSize))
     rightTopFont<-as.numeric(svalue(widgets$epi.rightTopFont))
-    rightTopFontsize<-as.numeric(svalue(widgets$epi.rightTopFontsize))
+    rightTopFontSize<-as.numeric(svalue(widgets$epi.rightTopFontSize))
 
     mapfile<-get("mapfile",envir=.rqtlnetwork)
     qnkfile<-get("qnkfile",envir=.rqtlnetwork)
@@ -1349,7 +1365,7 @@ function(){
                                   labels=c(epi_xlabel_dn),rot=90),
                                   y=list(at=c(epi_yat_left),
                                   labels=c(epi_ylabel_left)),
-                                  cex=leftBottomFontsize,font=leftBottomFont)
+                                  cex=leftBottomFontSize,font=leftBottomFont)
     )
     colorkey <- function(colors){
     n <- 100
@@ -1357,34 +1373,34 @@ function(){
     xleft <- breakss[-51]
     xright <- breakss[-1]
     x<-unit((xleft+xright)/2,"npc")
-    y<-unit(0,"npc")
+    y<-unit(1,"lines")
     col <- colors
-    grid.rect(x,y,gp=gpar(col=col,fill=col),height=unit(1,"lines"),
-              width=unit(0.016,"npc"),just=c("center","bottom"))
-    grid.rect(0.5,0,height=unit(1,"lines"),width=unit(0.8,"npc"),just=c("center","bottom"))
+    grid.rect(y,x,gp=gpar(col=col,fill=col),width=unit(1,"lines"),
+              height=unit(0.016,"npc"),just=c("left","center"))
+    grid.rect(unit(1,"lines"),0.5,width=unit(1,"lines"),height=unit(0.8,"npc"),just=c("left","center"))
     }
     top<-as.numeric(max(epi$z))
-    vplay<-grid.layout(2,1,heights=unit(c(2,1),c("lines","null")))
+    vplay<-grid.layout(1,3,widths=unit(c(3,1,1),c("lines","null","lines")))
     pushViewport(viewport(layout=vplay))
-    pushViewport(viewport(layout.pos.row=1))
+    pushViewport(viewport(layout.pos.col=1))
     colorkey(rev(heat.colors(50)))
-    grid.text(round(0:4*top/4,digits=1),x=unit(seq(0.1,0.9,length=5),"npc"),y=unit(-0.5,"lines"),
-              gp=gpar(font=colorkeyFont,cex=colorkeyFontSize)
+    grid.text(round(0:4*top/4,digits=1),y=unit(seq(0.1,0.9,length=5),"npc"),x=unit(0.5,"lines"),
+              gp=gpar(font=colorkeyFont,cex=colorkeyFontSize),rot=90
     )
     cv<-c_value/top
-    grid.lines(x = unit(c(cv*0.8+0.1, cv*0.8+0.1), "npc"),y = unit(c(0.5, 0.7), "npc"))
-    grid.text(paste("Threshold =",round(c_value,digits=1),sep=" "),x=unit(cv*0.8+0.1,"npc")+unit(1,"mm"),
-              y=unit(0.5,"npc")+unit(1,"mm"),just=c("left","bottom"),
+    grid.lines(y = unit(c(cv*0.8+0.1, cv*0.8+0.1), "npc"),x = unit(c(2.0, 2.2), "lines"))
+    grid.text(paste("Threshold =",round(c_value,digits=1),sep=" "),y=unit(cv*0.8+0.1,"npc")+unit(1,"mm"),
+              x=unit(2.5,"lines")+unit(1,"mm"),just=c("left","top"),rot=90,
               gp=gpar(font=ThresholdFont,cex=ThresholdFontSize)
     )
     popViewport()
-    pushViewport(viewport(layout.pos.row=2))
+    pushViewport(viewport(layout.pos.col=2))
     print(epiplot,newpage=F)
     trellis.focus("panel", 1, 1, clip.off=T, highlight = FALSE)
     panel.axis(at=epi_xat_up,labels=epi_xlabel_up,side=c("top"),outside=T,rot=0,
-               text.font=rightTopFont,text.cex=rightTopFontsize,line.lty="dotted")
+               text.font=rightTopFont,text.cex=rightTopFontSize,line.lty="dotted")
     panel.axis(at=epi_yat_right,labels=epi_ylabel_right,side=c("right"),outside=T,
-               text.font=rightTopFont,text.cex=rightTopFontsize,line.lty="dotted")
+               text.font=rightTopFont,text.cex=rightTopFontSize,line.lty="dotted")
     trellis.unfocus()
   }
   QTLNetworkPlot<-function(){
@@ -1551,7 +1567,7 @@ function(){
     pre_dupidx<-which(is.element(trait1_Qechr,trait2_Qechr))
     dup_Qeidx<-which(duplicated(check_Qechr))
     if(length(trait)>1){
-        traitinfo1<-rep(trait,Qe_end+1-Qe_start)
+        traitinfo1<-rep(1:2,Qe_end+1-Qe_start)
         }
     if(length(dup_Qeidx)>0){
         col_dup<-col_A[dup_Qeidx]
@@ -1632,7 +1648,7 @@ function(){
     #Get trait infomation for graphics.
     #And find different relationship in a qtl which is found in two traits.
     if(length(trait)>1){
-        traitinfo2<-rep(trait[traitWithEe],(Ee_end-Ee_start+1)*2)
+        traitinfo2<-rep(c(1,2)[traitWithEe],(Ee_end-Ee_start+1)*2)
         traitinfo<-bind(traitinfo1,traitinfo2)
         #dupinfo<-intersect(check_Qechr[which(traitinfo1==trait[1])],check_Qechr[which(traitinfo1==trait[2])])
         #if(length(dupinfo)>0){
@@ -1773,7 +1789,7 @@ function(){
     pushViewport(viewport(layout.pos.row=1,name="row1"))
     mytextA<-c("A","AE","A+AE")
     mytextI<-c("I","IE","I+IE")
-    mycol<-c("red","blue","green")
+    mycol<-c("red","green","blue")
     m<-3;n<-3
     up<-unit(0.1+(1:m-1)*0.14,"npc")
     down<-unit(0.1+(1:n-1)*0.14,"npc")
