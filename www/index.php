@@ -1,4 +1,4 @@
-
+﻿
 <!-- This is the project specific website template -->
 <!-- It can be changed as liked or replaced by other content -->
 
@@ -65,7 +65,7 @@ style="FONT-SIZE: 20pt" size="4"><span class="black" lang="en-US" xml:lang="en-U
 <p>Launch RQTLNetwork by command <em>library(RQTLNetwork)</em> within R and restart it by command <em>RQTLNetwork()</em>.</p>
 <p>&nbsp;</p>
 <p><strong>Download</strong></p>
-<p><a href="RQTLNetwork Manual.pdf">User Manual</a></p>
+<p><a href="RQTLNetwork_Manual.pdf">User Manual</a></p>
 <p><a href="data.zip">Example Data</a></p>
 <p>&nbsp;</p>
 <p>&nbsp;</p>
