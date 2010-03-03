@@ -20,7 +20,7 @@ LazyLoad: \tab yes\cr
 URL: \tab \url{http://rqtlnetwork.r-forge.r-project.org/} \cr
 }
 Users can use library(QTLNetworkR) to start the GUI. Please Refer to the documentation
-section of the project homepage for the usage of RQTLNetwork.
+section of the project homepage for the usage of QTLNetworkR.
 }
 \author{
 Zheng,Wenjun
